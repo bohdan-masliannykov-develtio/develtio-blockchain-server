@@ -6,7 +6,9 @@
     "outDir": "./dist", // compile directory,
     "strict": true,
     "moduleResolution": "node",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "typeRoots": ["node_modules/@types"]
   },
   "exclude": ["./node_modules"]
 }
