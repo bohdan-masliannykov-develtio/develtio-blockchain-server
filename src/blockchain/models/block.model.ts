@@ -1,14 +1,10 @@
 import * as crypto from 'crypto';
 
 export class Block {
-  private hash: string = '';
+  hash: string = '';
   private nonce: number = 0;
 
-  constructor(
-    public readonly previousHash: string,
-    public readonly timestamp: number,
-    public readonly data: any[]
-  ) {}
+  constructor(public readonly previousHash: string, public readonly timestamp: number, public readonly data: any[]) {}
 
   private async calculateHash(nonce: number) {
     const hash = this.previousHash + this.timestamp + this.data + nonce;
