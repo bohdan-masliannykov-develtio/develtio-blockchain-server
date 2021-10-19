@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "target": "es2017",
     "module": "commonjs",
     "rootDir": "./src", // input directory
@@ -8,7 +9,12 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "sourceMap": true,
-    "typeRoots": ["node_modules/@types"]
+    "typeRoots": ["node_modules/@types"],
+    "paths": {
+      "@blockchain/*": ["src/blockchain/*"],
+      "@server/*": ["src/server/*"],
+      "@shared/*": ["src/shared/*"]
+    }
   },
   "exclude": ["./node_modules"]
 }

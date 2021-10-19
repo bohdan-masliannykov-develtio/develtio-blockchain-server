@@ -2,13 +2,16 @@ import express, { Application, Request, Response } from 'express';
 import * as http from 'http';
 import { WebSocket } from 'ws';
 import { Blockchain } from './blockchain/models/blockchain.model';
+import { BlockchainServer } from './server/blockchain-server';
 
 const app: Application = express();
 const port: number | string = process.env.PORT || 8000;
 
 const server = http.createServer(app);
 
-// const wss = new WebSocket.Server({ server });
+const wss = new WebSocket.Server({ server });
+
+const bs = new BlockchainServer(wss);
 
 // wss.on('connection', (ws: WebSocket) => {
 //   console.log('Connected');
@@ -57,24 +60,24 @@ const server = http.createServer(app);
 
 server.listen(port, () => console.log(`Server started on port ${port} :)`));
 
-(async () => {
-  const blockchain = new Blockchain();
-  await blockchain.createGenesisBlock();
-  console.log('⏳ Initializing the blockchain, creating the genesis block...');
+// (async () => {
+//   const blockchain = new Blockchain();
+//   await blockchain.createGenesisBlock();
+//   console.log('⏳ Initializing the blockchain, creating the genesis block...');
 
-  //TODO listen when user sends amount
+//   //TODO listen when user sends amount
 
-  blockchain.createTransaction({ sender: 'Bohdan M.', reciepent: 'Piotr G.', amount: 100 });
-  blockchain.createTransaction({ sender: 'Piotr G.', reciepent: 'Robert J.', amount: 25 });
-  blockchain.createTransaction({ sender: 'Robert J.', reciepent: 'Serhii M.', amount: 10 });
-  await blockchain.minePendingTransactions();
+//   blockchain.createTransaction({ sender: 'Bohdan M.', reciepent: 'Piotr G.', amount: 100 });
+//   blockchain.createTransaction({ sender: 'Piotr G.', reciepent: 'Robert J.', amount: 25 });
+//   blockchain.createTransaction({ sender: 'Robert J.', reciepent: 'Serhii M.', amount: 10 });
+//   await blockchain.minePendingTransactions();
 
-  blockchain.createTransaction({ sender: 'Piotr G.', reciepent: 'Jan K.', amount: 14 });
+//   blockchain.createTransaction({ sender: 'Piotr G.', reciepent: 'Jan K.', amount: 14 });
 
-  await blockchain.minePendingTransactions();
+//   await blockchain.minePendingTransactions();
 
-  blockchain.createTransaction({ sender: 'Serhii G.', reciepent: 'Piotr G.', amount: 0.1 });
+//   blockchain.createTransaction({ sender: 'Serhii G.', reciepent: 'Piotr G.', amount: 0.1 });
 
-  await blockchain.minePendingTransactions();
-  console.log(blockchain);
-})();
+//   await blockchain.minePendingTransactions();
+//   console.log(blockchain);
+// })();
