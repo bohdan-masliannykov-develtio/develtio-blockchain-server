@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "./",
     "target": "es2017",
     "module": "commonjs",
-    "rootDir": "./src", // input directory
     "outDir": "./dist", // compile directory,
     "strict": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "sourceMap": true,
+    "allowJs": true,
+    "strictPropertyInitialization": false,
+    "strictNullChecks": false,
     "typeRoots": ["node_modules/@types"],
     "paths": {
       "@blockchain/*": ["src/blockchain/*"],
