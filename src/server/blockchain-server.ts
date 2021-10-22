@@ -11,11 +11,10 @@ export class BlockchainServer extends MessageServer<Message> {
 
   constructor(wsServer: WebSocket.Server) {
     super(wsServer);
-    console.log(this.recievedMessagesAwaitingResponse);
+    this.createConnection();
   }
 
   protected handleMessage(sender: WebSocket, message: Message) {
-    console.log(sender, message);
     switch (message.type) {
       case MessageTypes.GET_LONGEST_CHAIN_REQUEST:
         return this.handleLongestChainRequest(sender, message);
@@ -41,7 +40,6 @@ export class BlockchainServer extends MessageServer<Message> {
       this.sentMessagesAwaitingReply.set(message.correlationId, new Map());
     } else {
       //4. There is no longest chain in single-node blockchain
-
       this.replyTo(requestor, {
         type: MessageTypes.GET_LONGEST_CHAIN_RESPONSE,
         correlationId: message.correlationId,
@@ -69,11 +67,13 @@ export class BlockchainServer extends MessageServer<Message> {
   }
 
   private handleAddTransactionRequest(requestor: WebSocket, message: Message): void {
+    console.log('Block mined!', message.payload);
     //1. Get transactions from the node and share them to another nodes
     this.broadcastExcept(requestor, message);
   }
 
   private handleNewBlockAnnouncement(requestor: WebSocket, message: Message): void {
+    console.log('New transactions to be mined announced!', message.payload);
     //1. Announce finished minining block
     this.broadcastExcept(requestor, message);
   }

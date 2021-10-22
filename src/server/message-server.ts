@@ -8,15 +8,24 @@ export abstract class MessageServer<T> {
     return this.clients.size > 1;
   }
 
-  constructor(private readonly wsServer: WebSocket.Server) {
-    this.wsServer.on('connection', this.subscribeToMessages);
-    this.wsServer.on('error', this.cleanupDeadClients);
+  constructor(private readonly wsServer: WebSocket.Server) {}
+
+  createConnection() {
+    this.wsServer.on('connection', this.subscribeToMessages.bind(this));
+    this.wsServer.on('error', this.cleanupDeadClients.bind(this));
   }
 
   protected abstract handleMessage(sender: WebSocket, message: T): void;
 
   protected subscribeToMessages(ws: WebSocket): void {
-    console.log('connected');
+    ws.on('message', (data: any) => {
+      const buffText = Buffer.from(data).toString();
+      if (typeof buffText === 'string') {
+        this.handleMessage(ws, JSON.parse(buffText));
+      } else {
+        console.log('Recieved data of unsupported type');
+      }
+    });
   }
 
   protected replyTo(client: WebSocket, message: Readonly<T>): void {
@@ -39,5 +48,11 @@ export abstract class MessageServer<T> {
     return client.readyState === WebSocket.CLOSING || client.readyState === WebSocket.CLOSED;
   }
 
-  protected cleanupDeadClients(): void {}
+  protected cleanupDeadClients(): void {
+    this.wsServer.clients.forEach((client: any) => {
+      if (this.isDead(client)) {
+        this.wsServer.clients.delete(client);
+      }
+    });
+  }
 }
